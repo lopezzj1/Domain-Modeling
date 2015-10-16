@@ -11,143 +11,161 @@ import Foundation
 
 /////////////MONEY//////////////////
 
+//types of currencies
+enum Currency {
+    case USD
+    case GBP
+    case EUR
+    case CAN
+}
 
+//money struct contains:
+//amount, currencies
+//this struct has the ability to convert currencies, add and subtract currencies
 struct Money {
-    var amount = 0.0
-    var currency = ""
+    var amount : Double
+    var currency : Currency
+
+    //currency conversion function
+    mutating func convert (newCurrency : Currency) -> String {
+        switch self.currency {
+            case .USD :
+                if newCurrency == .GBP {
+                    currency = .GBP
+                    amount *= 0.5
+                }
+                if newCurrency == .EUR {
+                    currency = .EUR
+                    amount *= 1.5
+                }
+                if newCurrency == .CAN {
+                    currency = .CAN
+                    amount *= 1.25
+                }
+            case .GBP :
+                if newCurrency == .USD {
+                    currency = .USD
+                    amount *= 2
+                }
+                if newCurrency == .EUR {
+                    currency = .EUR
+                    amount *= 3
+                }
+                if newCurrency == .CAN {
+                    currency = .CAN
+                    amount *= 2.5
+                }
+            case .EUR :
+                if newCurrency == .USD {
+                    currency = .USD
+                    amount *= 0.66
+                }
+                if newCurrency == .GBP {
+                    currency = .GBP
+                    amount *= 0.33
+                }
+                if newCurrency == .CAN {
+                    currency = .CAN
+                    amount *= 0.83
+                }
+            case .CAN :
+                if newCurrency == .USD {
+                    currency = .USD
+                    amount *= 0.80
+                }
+                if newCurrency == .GBP {
+                    currency = .GBP
+                    amount *= 0.40
+                }
+                if newCurrency == .EUR {
+                    currency = .EUR
+                    amount *= 1.2
+                }
+        }
+        
+        return ("New amount: \(self.amount) \(currency)")
+    }
     
-    mutating func currency (currCurrency : String) {
-        if currCurrency == "USD" || currCurrency == "EUR" || currCurrency == "GBP" || currCurrency == "CAN" {
-                currency = currCurrency
+    //returns the new total after adding the two currencies
+    //if the currencies are different, the default is the first currency type
+    mutating func add(var newAmount : Money) -> String{
+        if self.currency == newAmount.currency {
+            return ("New amount \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) = \(self.amount + newAmount.amount)")
         } else {
-            print ("Current currency \(currCurrency) is not of USD, EUR, GBP, or CAN type")
+            print("New amount is \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) =")
+            newAmount.convert(self.currency)
+            let amount = self.amount + newAmount.amount
+            return("\t \(amount) \(newAmount.currency)")
         }
         
     }
 
-    func convertCurrency (amt : Double, convertTo : String) -> Double {
-        switch self.currency {
-            case "USD":
-                if convertTo == "GBP" {
-                    return (amt * 0.5)
-                }
-                
-                if convertTo == "EUR" {
-                    return (amt * 1.5)
-                }
-                
-                if convertTo == "CAN" {
-                    return (amt * 1.25)
-                }
-            case "GBP":
-                if convertTo == "USD" {
-                    return (amt * 2)
-                }
-                
-                if convertTo == "EUR" {
-                    return (amt * 2)
-                }
-                
-                if convertTo == "CAN" {
-                    return (amt * 2.50)
-            }
-            case "EUR":
-                if convertTo == "USD" {
-                    return (amt * 0.66)
-                }
-                
-                if convertTo == "GBP" {
-                    return (amt * 0.33)
-                }
-                
-                if convertTo == "CAN" {
-                    return (amt * 0.83)
-            }
-            case "CAN":
-                if convertTo == "USD" {
-                    return (amt * 0.80)
-                }
-                
-                if convertTo == "GBP" {
-                    return (amt * 0.4)
-                }
-                
-                if convertTo == "EUR" {
-                    return (amt * 1.2)
-            }
-            default:
-                return -0.0
+    //returns the new total after subtracting the two currencies
+    //if the currencies are different, the default is the first currency type
+    mutating func sub(var newAmount : Money) -> String{
+        if self.currency == newAmount.currency {
+            return ("New amount \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) = \(self.amount - newAmount.amount)")
+        } else {
+            print("New amount is \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) =")
+            newAmount.convert(self.currency)
+            let amount = self.amount - newAmount.amount
+            return("\t \(amount) \(newAmount.currency)")
         }
-        return -0.00
-    }
-    
-    func add(value : Double , curr : String) -> Double {
-        if self.currency == curr {
-            return self.amount + value
-        } else if self.currency != curr {
-            let newAmt = convertCurrency(value, convertTo: curr)
-            return self.amount + newAmt
-        }
-        return 0.0
-    }
-    
-    func subtract(value : Double , curr : String) -> Double {
-        if self.currency == curr {
-            return self.amount - value
-        } else if self.currency != curr {
-            let newAmt = convertCurrency(value, convertTo: curr)
-            return self.amount - newAmt
-        }
-        return 0.0
+        
     }
     
 }
 
 
-var money = Money()
+var money = Money(amount: 1.0, currency: Currency.USD)
 
-
-
+////////////////////////
 //////////JOB//////////
+///////////////////////
 
-enum JobTitle {
-    case BusinessAnalyst
-    case MarketingAnalyst
-    case HRAssistant
+//different types of salaries
+enum SalaryType {
+    case HOURLY
+    case YEARLY
 }
 
+
+//class job takes in a job title, salary, and salary type
+//this function can calculate income, raise
 class Job {
-    var jobTitle = ""
-    var jobSalary = 0
-    var salaryType = ""
+    var jobTitle : String
+    var jobSalary : Double
+    var salaryType : SalaryType
     
     
-    init(title : String, salary: Int, type: String){
+    init(title : String, salary: Double, type: SalaryType){
         jobTitle = title
         jobSalary = salary
         salaryType = type
     }
     
-    func calculateIncome (numHours : Int) -> Int {
-        if self.salaryType == "Hour" || self.salaryType == "hour"{
-            return (numHours * jobSalary)
+    func calculateIncome (numHours : Int?) -> Double {
+        if self.salaryType == .HOURLY {
+            return (Double(numHours!) * jobSalary)
         } else {
            return self.jobSalary
         }
     }
     
     func raise (percent : Double) -> Double {
-        return (Double(jobSalary) * percent)
+        let rate = percent/100
+        return (jobSalary * rate) + jobSalary
     }
     
 }
 
 
 
-var businessAnalyst = Job(title: "Business Analyst", salary: 75000, type: "year")
-var marketAnalyst = Job(title: "Marketing Analyst", salary: 50000, type: "year")
-var hrAssistant = Job(title: "HR Assistant", salary: 12, type: "hour")
+var businessAnalyst = Job(title: "Business Analyst", salary: 75000, type: SalaryType.YEARLY)
+var marketAnalyst = Job(title: "Marketing Analyst", salary: 50000, type: SalaryType.YEARLY)
+var hrAssistant = Job(title: "HR Assistant", salary: 12.25, type: SalaryType.HOURLY)
 
+print(businessAnalyst.raise(2.5))
 
 
 
@@ -157,7 +175,7 @@ class Person {
     var firstName : String
     var lastName : String
     var age : Int32
-    var job :  Job?
+    var job : Job?
     var spouse : String?
     
     init (fName : String, lName : String, currentAge : Int32, currJob : Job, currSpouse : String?) {
@@ -201,9 +219,6 @@ class Person {
         } else if age < 18 {
             print("Spouse: N/A")
         }
-        
-
-        
     }
     
 }
@@ -234,8 +249,8 @@ class Family {
         self.familyMembers = members
     }
     
-    func householdIncome () -> Int{
-        var total = 0
+    func householdIncome () -> Double {
+        var total = 0.0
         for var i = 0; i < familyMembers.count; i++ {
             total += familyMembers[i].job!.calculateIncome(2080)
         }
@@ -253,5 +268,8 @@ class Family {
 var familyArray = [p1, p2, p3]
 var newFam = Family(members: familyArray)
 
-print(newFam!.householdIncome())
+//print(newFam!.householdIncome())
 newFam!.haveChild("Aleyna", lastName: "Yamaguchi")
+
+print("")
+print("")
