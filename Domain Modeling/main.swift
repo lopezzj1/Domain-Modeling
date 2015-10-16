@@ -83,19 +83,18 @@ struct Money {
                 }
         }
         
-        return ("New amount: \(self.amount) \(currency)")
+        return ("\(self.amount) \(currency)")
     }
     
     //returns the new total after adding the two currencies
     //if the currencies are different, the default is the first currency type
     mutating func add(var newAmount : Money) -> String{
         if self.currency == newAmount.currency {
-            return ("New amount \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) = \(self.amount + newAmount.amount)")
+            return ("\(self.amount + newAmount.amount)")
         } else {
-            print("New amount is \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) =")
             newAmount.convert(self.currency)
             let amount = self.amount + newAmount.amount
-            return("\t \(amount) \(newAmount.currency)")
+            return("\(amount) \(newAmount.currency)")
         }
         
     }
@@ -104,12 +103,11 @@ struct Money {
     //if the currencies are different, the default is the first currency type
     mutating func sub(var newAmount : Money) -> String{
         if self.currency == newAmount.currency {
-            return ("New amount \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) = \(self.amount - newAmount.amount)")
+            return ("\(self.amount - newAmount.amount)")
         } else {
-            print("New amount is \(self.amount) \(self.currency) + \(newAmount.amount) \(newAmount.currency) =")
             newAmount.convert(self.currency)
             let amount = self.amount - newAmount.amount
-            return("\t \(amount) \(newAmount.currency)")
+            return("\(amount) \(newAmount.currency)")
         }
         
     }
@@ -117,7 +115,8 @@ struct Money {
 }
 
 
-var money = Money(amount: 1.0, currency: Currency.USD)
+
+
 
 ////////////////////////
 //////////JOB//////////
@@ -165,8 +164,6 @@ var businessAnalyst = Job(title: "Business Analyst", salary: 75000, type: Salary
 var marketAnalyst = Job(title: "Marketing Analyst", salary: 50000, type: SalaryType.YEARLY)
 var hrAssistant = Job(title: "HR Assistant", salary: 12.25, type: SalaryType.HOURLY)
 
-print(businessAnalyst.raise(2.5))
-
 
 
 //////////PERSON////////////
@@ -187,14 +184,14 @@ class Person {
             job = currJob
         } else if age < 16 {
             job = nil
-            print("You cannot have a job under the age of 16")
+            print("\(firstName) \(lastName) cannot have a job since they are under the age of 16")
         }
         
         if age >= 18 {
             spouse = currSpouse
         } else if age < 18 {
             spouse = nil
-            print("You cannot be married under the age of 18")
+            print("\(firstName) \(lastName) cannot be married under the age of 18")
         }
     }
     
@@ -258,7 +255,9 @@ class Family {
     }
     
     func haveChild(firstName : String, lastName : String) {
-        familyMembers.append(Person(fName: firstName, lName: lastName, currentAge: 0))
+        let child = Person(fName: firstName, lName: lastName, currentAge: 0)
+        familyMembers.append(child)
+        print("New Child name: \(child.firstName) \(child.lastName), age: \(child.age)")
     }
     
 }
@@ -268,8 +267,69 @@ class Family {
 var familyArray = [p1, p2, p3]
 var newFam = Family(members: familyArray)
 
-//print(newFam!.householdIncome())
-newFam!.haveChild("Aleyna", lastName: "Yamaguchi")
+
+
+print("Test Cases - Money:")
+var money = Money(amount: 2.0, currency: Currency.USD)
+var money2 = Money(amount: 4.0, currency: Currency.GBP)
+
+print("Money = \(money.amount) \(money.currency)")
+print("Money = \(money2.amount) \(money2.currency)")
+print("Convert \(money.amount) \(money.currency) to EUR = \(money.convert(Currency.EUR))")
+money = Money(amount: 2.0, currency: Currency.USD)
+print("Convert \(money.amount) \(money.currency) to GBP = \(money.convert(Currency.GBP))")
+money = Money(amount: 2.0, currency: Currency.USD)
+print("Convert \(money.amount) \(money.currency) to CAN = \(money.convert(Currency.CAN))")
+
+money = Money(amount: 2.0, currency: Currency.USD)
+
+print("Add \(money.amount) \(money.currency) + \(money2.amount) \(money2.currency) = \(money.add(money2))")
+
+money = Money(amount: 4.0, currency: Currency.USD)
+money2 = Money(amount: 1.0, currency: Currency.GBP)
+print("Add \(money.amount) \(money.currency)  \(money2.amount) \(money2.currency) = \(money.sub(money2))")
+print("")
+
+print("Test Cases - Job")
+print("Job: \(businessAnalyst.jobTitle), Job Salary: $\(businessAnalyst.jobSalary), Salary Type: \(businessAnalyst.salaryType)")
+print("Job: \(marketAnalyst.jobTitle), Job Salary: $\(marketAnalyst.jobSalary), Salary Type: \(marketAnalyst.salaryType)")
+print("Job: \(hrAssistant.jobTitle), Job Salary: \(hrAssistant.jobSalary), Salary Type: \(hrAssistant.salaryType)")
+
+print("Calculate Income for Marketing Analyst: $\(marketAnalyst.calculateIncome(0))")
+print("Calculate Income for HR Assistant with 40 hours of work: $\(hrAssistant.calculateIncome(40))")
+
+print("Calculate 2.5% raise for Business Analyst: $\(businessAnalyst.raise(2.5))")
+print("Calculate 2.5% raise for HR Assistant: $\(hrAssistant.raise(2.5))")
+print("")
+
+
+print("Test Cases - Person")
+var p4 = Person(fName: "Kevin", lName: "Adams", currentAge: 23, currJob: marketAnalyst, currSpouse: "Jill")
+var p5 = Person(fName: "Jill", lName: "Lopez", currentAge: 22, currJob: hrAssistant, currSpouse: "Kevin")
+print("Name: \(p4.firstName) \(p4.lastName), Current Age: \(p4.age), Current Job: \(p4.age), Spouse: \(p4.spouse!)")
+print("Name: \(p5.firstName) \(p5.lastName), Current Age: \(p5.age), Current Job: \(p5.age), Spouse: \(p5.spouse!)")
+
+print("Mary Cobb, age: 15, spouse: none")
+var p6 = Person(fName: "Mary", lName: "Cobb", currentAge: 15, currJob: hrAssistant, currSpouse: "none")
+
+print("")
+
+print("Test Cases - Family")
+var famArray1 = [p1, p2, p3]
+var newFam1 = Family(members: famArray1)
+
+print("Family Members;")
+for var i = 0;  i < famArray1.count; i++ {
+    print("\(famArray1[i].firstName) \(famArray1[i].lastName), Age: \(famArray1[i].age),  Job Title: \(famArray1[i].job!.jobTitle), Salary: \(famArray1[i].job!.jobSalary) ")
+}
+
+print("Total Household Income \(newFam!.householdIncome())")
+print("Added new child - Mary Cobb")
+newFam1?.haveChild("Mary", lastName: "Cobb")
+
+
+
 
 print("")
 print("")
+
