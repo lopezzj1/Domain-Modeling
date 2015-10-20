@@ -11,6 +11,20 @@ import Foundation
 
 /////////////MONEY//////////////////
 
+//protocol
+protocol CustomStringConvertible {
+    func description () -> String
+}
+
+protocol Mathematics {
+    func addTotal(newAmount : Money) -> String
+    func subTotal(newAmount : Money) -> String
+}
+
+extension Double {
+    
+}
+
 //types of currencies
 enum Currency {
     case USD
@@ -22,7 +36,7 @@ enum Currency {
 //money struct contains:
 //amount, currencies
 //this struct has the ability to convert currencies, add and subtract currencies
-struct Money {
+struct Money:CustomStringConvertible, Mathematics {
     var amount : Double
     var currency : Currency
 
@@ -86,6 +100,7 @@ struct Money {
         return ("\(self.amount) \(currency)")
     }
     
+    /*
     //returns the new total after adding the two currencies
     //if the currencies are different, the default is the first currency type
     mutating func add(var newAmount : Money) -> String{
@@ -110,6 +125,39 @@ struct Money {
             return("\(amount) \(newAmount.currency)")
         }
         
+    }*/
+    
+    //func description adheres to the new protocol
+    //for CustomStringConvertable that returns
+    //the description for money
+    func description() -> String {
+        return "\(currency)\(amount)"
+    }
+    
+    //func addTotal adheres to the new protocol called
+    //mathematics that returns a string total
+    //of two Money objects being added together
+    func addTotal(var newAmount: Money) -> String {
+        if self.currency == newAmount.currency {
+            return ("\(self.amount + newAmount.amount)")
+        } else {
+            newAmount.convert(self.currency)
+            let amount = self.amount + newAmount.amount
+            return("\(amount) \(newAmount.currency)")
+        }
+    }
+    
+    //func subTotal adheres to the new protocol called
+    //mathematics that returns a string total
+    //of two Money objects being subtracted together
+    func subTotal(var newAmount: Money) -> String {
+        if self.currency == newAmount.currency {
+            return ("\(self.amount - newAmount.amount)")
+        } else {
+            newAmount.convert(self.currency)
+            let amount = self.amount - newAmount.amount
+            return("\(amount) \(newAmount.currency)")
+        }
     }
     
 }
@@ -283,11 +331,11 @@ print("Convert \(money.amount) \(money.currency) to CAN = \(money.convert(Curren
 
 money = Money(amount: 2.0, currency: Currency.USD)
 
-print("Add \(money.amount) \(money.currency) + \(money2.amount) \(money2.currency) = \(money.add(money2))")
+//print("Add \(money.amount) \(money.currency) + \(money2.amount) \(money2.currency) = \(money.add(money2))")
 
 money = Money(amount: 4.0, currency: Currency.USD)
 money2 = Money(amount: 1.0, currency: Currency.GBP)
-print("Add \(money.amount) \(money.currency)  \(money2.amount) \(money2.currency) = \(money.sub(money2))")
+//print("Add \(money.amount) \(money.currency)  \(money2.amount) \(money2.currency) = \(money.sub(money2))")
 print("")
 
 print("Test Cases - Job")
